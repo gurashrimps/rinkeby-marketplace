@@ -21,6 +21,8 @@ export default function CreateItem() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  const { name, description, price } = formInput;
+
   async function onChange(e) {
     const file = e.target.files[0];
     try {
@@ -34,7 +36,7 @@ export default function CreateItem() {
     }
   }
   async function createMarket() {
-    const { name, description, price } = formInput;
+    console.log("123");
     if (!name || !description || !price || !fileUrl) return;
     /* first, upload to IPFS */
     const data = JSON.stringify({
@@ -84,6 +86,10 @@ export default function CreateItem() {
     router.push("/");
   }
 
+  const isOk = !!(name && description && price && fileUrl);
+
+  console.log(loading || !isOk);
+
   return (
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
@@ -111,11 +117,14 @@ export default function CreateItem() {
         <input type="file" name="Asset" className="my-4" onChange={onChange} />
         {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
         <button
-          disabled={loading}
           onClick={createMarket}
-          className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg"
+          className="font-bold mt-4 bg-pink-500 text-white rounded-lg p-4 shadow-lg disabled:opacity-50 disabled:bg-pink-100"
         >
-          {loading ? "Loading" : "Create Digital Asset"}
+          {loading
+            ? "Loading"
+            : isOk
+            ? "Create Digital Asset"
+            : "Please fill all upper fields"}
         </button>
       </div>
     </div>
